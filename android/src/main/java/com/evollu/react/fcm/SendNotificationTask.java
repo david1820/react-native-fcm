@@ -1,6 +1,8 @@
 package com.evollu.react.fcm;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -78,6 +80,16 @@ public class SendNotificationTask extends AsyncTask<Void, Void, Void> {
             .setSubText(bundle.getString("sub_text"))
             .setVibrate(new long[]{0, DEFAULT_VIBRATION})
             .setExtras(bundle.getBundle("data"));
+
+            NotificationManager mNotificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                int importance = NotificationManager.IMPORTANCE_HIGH;
+                NotificationChannel notificationChannel = new NotificationChannel("CIVITAS_PUSH", "CIVITAS_PUSH", importance);
+                notification.setChannelId("CIVITAS_PUSH");
+                assert mNotificationManager != null;
+                mNotificationManager.createNotificationChannel(notificationChannel);
+            }
 
             if(android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
                 notification.setGroup(bundle.getString("group"));
